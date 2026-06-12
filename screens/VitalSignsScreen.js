@@ -14,12 +14,12 @@ export default function VitalSignsScreen({ navigation }) {
   const [diastolicBP, setDiastolicBP] = useState('');
   const [bodyTemp, setBodyTemp] = useState('');
   const [spo2, setSpo2] = useState('');
+  const [gsrValue, setGsrValue] = useState('4.5');
   const [footIssueFlag, setFootIssueFlag] = useState(false);
   const [patient, setPatient] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [wsConnected, setWsConnected] = useState(false);
 
   // Fetch patient profile
   useEffect(() => {
@@ -36,39 +36,8 @@ export default function VitalSignsScreen({ navigation }) {
     fetchProfile();
   }, [patientId]);
 
-  // --- WEBSOCKET LOGIC START ---
-  useEffect(() => {
-    // Replace with your Python backend IP
-    const ws = new WebSocket('ws://192.168.29.231:5001');
-
-    ws.onopen = () => {
-      console.log('Connected to ECG Python Backend');
-      setWsConnected(true);
-    };
-
-    ws.onmessage = (e) => {
-      // e.data is the raw value from the sensor (e.g., "399")
-      // NOTE: This updates the heartRate field with raw data.
-      // You may need an algorithm to convert raw pulses to actual BPM.
-      setHeartRate(e.data);
-    };
-
-    ws.onerror = (e) => {
-      console.log('WebSocket Error: ', e.message);
-      setWsConnected(false);
-    };
-
-    ws.onclose = (e) => {
-      console.log('WebSocket Connection Closed: ', e.code, e.reason);
-      setWsConnected(false);
-    };
-
-    return () => ws.close(); // Cleanup on unmount
-  }, []);
-  // --- WEBSOCKET LOGIC END ---
-
   const handleSave = async () => {
-    if (!heartRate || !systolicBP || !diastolicBP || !bodyTemp || !spo2) {
+    if (!heartRate || !systolicBP || !diastolicBP || !bodyTemp || !spo2 || !gsrValue) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
@@ -80,6 +49,7 @@ export default function VitalSignsScreen({ navigation }) {
         heart_rate: parseInt(heartRate),
         systolic_bp: parseInt(systolicBP),
         diastolic_bp: parseInt(diastolicBP),
+        gsr_value: parseFloat(gsrValue),
         body_temperature: parseFloat(bodyTemp),
         spo2: parseInt(spo2),
         foot_issue_flag: footIssueFlag
@@ -107,9 +77,7 @@ export default function VitalSignsScreen({ navigation }) {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-        {wsConnected
-          ? '🟢 ECG Streaming Active: Heart Rate is updating automatically from the sensor.'
-          : '⚪ Enter current physiological readings to evaluate anxiety level before starting therapy.'}
+        ⚪ Enter current physiological readings to evaluate anxiety level before starting therapy.
       </Text>
 
       {/* Profile Data (Read-only) */}
@@ -127,10 +95,10 @@ export default function VitalSignsScreen({ navigation }) {
       <View style={[styles.card, { backgroundColor: colors.card }]}>
         <View style={styles.row}>
           <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
-            <Text style={[styles.label, { color: colors.text }]}>Heart Rate (Live Raw)</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Heart Rate (BPM)</Text>
             <TextInput
-              style={[styles.input, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text, fontWeight: 'bold' }]}
-              placeholder="Waiting for sensor..."
+              style={[styles.input, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
+              placeholder="72"
               placeholderTextColor={colors.textSecondary}
               keyboardType="number-pad"
               value={heartRate}
@@ -175,16 +143,29 @@ export default function VitalSignsScreen({ navigation }) {
           </View>
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={[styles.label, { color: colors.text }]}>Body Temperature (°F)</Text>
-          <TextInput
-            style={[styles.input, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
-            placeholder="98.6"
-            placeholderTextColor={colors.textSecondary}
-            keyboardType="decimal-pad"
-            value={bodyTemp}
-            onChangeText={setBodyTemp}
-          />
+        <View style={styles.row}>
+          <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
+            <Text style={[styles.label, { color: colors.text }]}>Body Temp (°F)</Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
+              placeholder="98.6"
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="decimal-pad"
+              value={bodyTemp}
+              onChangeText={setBodyTemp}
+            />
+          </View>
+          <View style={[styles.inputGroup, { flex: 1 }]}>
+            <Text style={[styles.label, { color: colors.text }]}>GSR Value (µS)</Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.border, backgroundColor: colors.background, color: colors.text }]}
+              placeholder="4.5"
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="decimal-pad"
+              value={gsrValue}
+              onChangeText={setGsrValue}
+            />
+          </View>
         </View>
 
         <View style={styles.switchRow}>

@@ -3,7 +3,7 @@ import axios from "axios";
 // IMPORTANT: Replace with your Mac's IP address
 // Find using: ifconfig | grep "inet " | grep -v 127.0.0.1
 // Example: 192.168.1.5
-const API_BASE_URL = "http://192.168.29.231:8080/api"; // Updated to current Mac's IP
+const API_BASE_URL = "http://192.168.29.97:8080/api"; // Updated to current Mac's IP
 
 const api = axios.create({
   baseURL: API_BASE_URL,

@@ -9,7 +9,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
 import VitalSignsScreen from './screens/VitalSignsScreen';
 import TherapySessionScreen from './screens/TherapySessionScreen';
-import ECGMonitorScreen from './screens/ECGMonitorScreen';
 
 import HistoryScreen from './screens/HistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -48,11 +47,6 @@ function HomeStack() {
         name="WeeklyReport" 
         component={WeeklyReportScreen} 
         options={{ headerShown: true, title: 'Weekly Progress' }} 
-      />
-      <Stack.Screen 
-        name="ECGMonitor" 
-        component={ECGMonitorScreen} 
-        options={{ headerShown: true, title: 'Live ECG Monitor' }} 
       />
     </Stack.Navigator>
   );

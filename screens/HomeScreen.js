@@ -140,13 +140,6 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('WeeklyReport')} 
             colors={colors} shadow={shadow} radius={radius}
           />
-          <ActionCard 
-            title="Live ECG" 
-            icon="pulse" 
-            color="#ec4899" 
-            onPress={() => navigation.navigate('ECGMonitor')} 
-            colors={colors} shadow={shadow} radius={radius}
-          />
         </View>
 
         <View style={[styles.infoBanner, { backgroundColor: colors.accent }]}>

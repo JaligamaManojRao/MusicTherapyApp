@@ -8,7 +8,7 @@ export default function ECGMonitorScreen() {
   const [status, setStatus] = useState('Disconnected');
   const [logs, setLogs] = useState([]);
 
-  const SERVER_IP = '192.168.29.231';
+  const SERVER_IP = '192.168.29.97';
   const PORT = '5001';
 
   const addLog = (msg) => {
